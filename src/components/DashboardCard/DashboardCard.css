@@ -1,0 +1,18 @@
+.cardContainer {
+    display: flex;
+    justify-content: center;
+}
+
+@media (max-width: 560px) {
+    .cardDesign {
+        width: 90vw !important;
+        min-width: 320px;
+    }
+}
+
+@media (max-width: 405px) {
+    .headingContainer {
+        display: flex;
+        flex-direction: column !important;
+    }
+}

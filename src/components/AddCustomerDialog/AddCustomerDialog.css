@@ -1,0 +1,12 @@
+@media screen and (max-width: 664px) {
+    .fullwidth {
+        width: 100% !important;
+    }
+}
+
+@media screen and (max-width: 520px) {
+    .left-responsive {
+        text-align: left !important;
+        margin-left: 18px;
+    }
+}

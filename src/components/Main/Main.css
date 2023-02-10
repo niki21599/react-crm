@@ -1,0 +1,9 @@
+.mainContent {
+    position: absolute;
+    width: 100vw;
+}
+
+.left {
+    left: 240px;
+    width: calc(100vw - 240px);
+}

@@ -1,23 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import Header from "./components/Header/Header";
+import Main from "./components/Main/Main";
+import React from "react";
 
 function App() {
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [activeSite, setActiveSite] = React.useState("dashboard");
+  const handleDrawer = () => {
+    setDrawerOpen(!drawerOpen);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header
+        authenticated={true}
+        handleDrawer={handleDrawer}
+        open={drawerOpen}
+        setActiveSite={setActiveSite}
+      ></Header>
+      <Main activeSite={activeSite} drawerOpen={drawerOpen}></Main>
     </div>
   );
 }

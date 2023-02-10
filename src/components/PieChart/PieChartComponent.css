@@ -1,0 +1,7 @@
+@media (max-width: 560px) {
+    .chartContainer {
+        width: 100%;
+    }
+}
+
+@media (max-width: 442px) {}

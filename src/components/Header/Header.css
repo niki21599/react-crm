@@ -1,0 +1,17 @@
+.img-logo {
+    height: 64px;
+    object-fit: conatain;
+}
+
+.responsive {
+    display: none;
+}
+
+@media screen and (max-width: 850px) {
+    .responsive-d-none {
+        display: none;
+    }
+    .responsive {
+        display: block;
+    }
+}
