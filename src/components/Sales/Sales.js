@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import "./Sales.css";
-import AddCustomerButton from "../AddCustomerButton/AddCustomerButton";
+import AddButton from "../AddButton/AddButton";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import AddSaleDialog from "../AddSaleDialog/AddSaleDialog";
@@ -35,6 +35,10 @@ export default function Sales(props) {
         });
       });
   }, []);
+
+  let openAddSale = () => {
+    setAddSale(true);
+  };
 
   const getCustomerFullname = (id) => {
     let customer = allCusomters.filter((customer) => id === customer.pk);
@@ -161,7 +165,7 @@ export default function Sales(props) {
         </Box>
       </div>
       <div>
-        <AddCustomerButton handleAddCustomer={setAddSale}></AddCustomerButton>
+        <AddButton onClick={openAddSale}></AddButton>
         <AddSaleDialog
           open={addSale}
           setOpen={setAddSale}

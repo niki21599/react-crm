@@ -18,7 +18,7 @@ let addCustomerDialogSlice = createSlice({
   name: "addCustomerDialog",
   reducers: {
     setOpen: (state, action) => {
-      state.openAddCustomerDialog = action.payload;
+      state.open = action.payload;
     },
     setFirstname: (state, action) => {
       state.firstname = action.payload;

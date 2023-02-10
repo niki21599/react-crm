@@ -31,19 +31,7 @@ import {
 } from "../../store/slices/addCustomerDialogSlice";
 import { useSelector, useDispatch } from "react-redux";
 
-export default function AddCustomerDialog({ open, setOpen, addCustomerData }) {
-  // const [firstname, setFirstname] = React.useState("");
-  // const [lastname, setLastname] = React.useState("");
-  // const [birthdate, setBirthdate] = React.useState("05/21/1999");
-  // const [street, setStreet] = React.useState("");
-  // const [zip, setZip] = React.useState("");
-  // const [city, setCity] = React.useState("");
-  // const [email, setEmail] = React.useState("");
-  // const [region, setRegion] = React.useState("");
-  // const [loading, setLoading] = React.useState(false);
-
-  // const [errors, setErrors] = React.useState({});
-
+export default function AddCustomerDialog({ addCustomerData }) {
   let {
     firstname,
     lastname,
@@ -55,6 +43,7 @@ export default function AddCustomerDialog({ open, setOpen, addCustomerData }) {
     region,
     loading,
     errors,
+    open,
   } = useSelector((state) => state.addCustomerDialog);
 
   let dispatch = useDispatch();

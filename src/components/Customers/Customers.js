@@ -1,15 +1,16 @@
 import React from "react";
 import "./Customers.css";
-import AddCustomerButton from "../AddCustomerButton/AddCustomerButton";
+import AddButton from "../AddButton/AddButton";
 import AddCustomerDialog from "../AddCustomerDialog/AddCustomerDialog";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import SaveChangesButton from "../SaveChangesButton/SaveChangesButton";
 import { useEffect } from "react";
 import { getCustomers } from "../../api/apiCalls";
+import { setOpen } from "../../store/slices/addCustomerDialogSlice";
+import { useDispatch } from "react-redux";
 
 export default function Customers(props) {
-  const [addCustomer, setAddCustomer] = React.useState(false);
   const [pageSize, setPageSize] = React.useState(5);
   const [customerData, setCustomerData] = React.useState([]);
   const [sortModel, setSortModel] = React.useState([
@@ -18,6 +19,12 @@ export default function Customers(props) {
       sort: "desc",
     },
   ]);
+  let dispatch = useDispatch();
+
+  let openAddCustomerDialog = () => {
+    console.log("im here");
+    dispatch(setOpen(true));
+  };
 
   useEffect(() => {
     getCustomers().then((customers) => {
@@ -129,12 +136,8 @@ export default function Customers(props) {
         </Box>
       </div>
       <div>
-        <AddCustomerButton
-          handleAddCustomer={setAddCustomer}
-        ></AddCustomerButton>
+        <AddButton onClick={openAddCustomerDialog}></AddButton>
         <AddCustomerDialog
-          open={addCustomer}
-          setOpen={setAddCustomer}
           addCustomerData={addCustomerData}
         ></AddCustomerDialog>
       </div>
