@@ -36,7 +36,7 @@ export default function Sales(props) {
       });
   }, []);
 
-  const transformCustomer = (id) => {
+  const getCustomerFullname = (id) => {
     let customer = allCusomters.filter((customer) => id === customer.pk);
     if (customer.length >= 1) {
       return (
@@ -47,7 +47,7 @@ export default function Sales(props) {
     }
   };
 
-  const transformSalesman = (id) => {
+  const getSalesmanFullname = (id) => {
     let salesman = allSalesman.filter((seller) => id === seller.pk);
     if (salesman.length >= 1) {
       return (
@@ -69,8 +69,8 @@ export default function Sales(props) {
     let changedData = [];
     console.log("Sales", sales);
     for (const sale of sales) {
-      let sellerName = transformSalesman(sale.fields.salesPerson);
-      let customerName = transformCustomer(sale.fields.customer);
+      let sellerName = getSalesmanFullname(sale.fields.salesPerson);
+      let customerName = getCustomerFullname(sale.fields.customer);
       changedData.push({
         id: sale.pk,
         date: sale.fields.created_at,

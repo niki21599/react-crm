@@ -16,19 +16,50 @@ import { saveCustomer } from "../../api/apiCalls";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useEffect } from "react";
 import { getRegions } from "../../api/apiCalls";
+import {
+  setOpen,
+  setFirstname,
+  setLastname,
+  setBirthdate,
+  setCity,
+  setEmail,
+  setErrors,
+  setLoading,
+  setRegion,
+  setStreet,
+  setZip,
+} from "../../store/slices/addCustomerDialogSlice";
+import { useSelector, useDispatch } from "react-redux";
 
 export default function AddCustomerDialog({ open, setOpen, addCustomerData }) {
-  const [firstname, setFirstname] = React.useState("");
-  const [lastname, setLastname] = React.useState("");
-  const [birthdate, setBirthdate] = React.useState("05/21/1999");
-  const [street, setStreet] = React.useState("");
-  const [zip, setZip] = React.useState("");
-  const [city, setCity] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [region, setRegion] = React.useState("");
-  const [savingData, setSavingData] = React.useState(false);
+  // const [firstname, setFirstname] = React.useState("");
+  // const [lastname, setLastname] = React.useState("");
+  // const [birthdate, setBirthdate] = React.useState("05/21/1999");
+  // const [street, setStreet] = React.useState("");
+  // const [zip, setZip] = React.useState("");
+  // const [city, setCity] = React.useState("");
+  // const [email, setEmail] = React.useState("");
+  // const [region, setRegion] = React.useState("");
+  // const [loading, setLoading] = React.useState(false);
+
+  // const [errors, setErrors] = React.useState({});
+
+  let {
+    firstname,
+    lastname,
+    birthdate,
+    street,
+    zip,
+    city,
+    email,
+    region,
+    loading,
+    errors,
+  } = useSelector((state) => state.addCustomerDialog);
+
+  let dispatch = useDispatch();
+
   const [regions, setRegions] = React.useState([]);
-  const [errors, setErrors] = React.useState({});
 
   useEffect(() => {
     getRegions().then((regions) => setRegions(regions)); // setRegions(regions));
@@ -43,14 +74,14 @@ export default function AddCustomerDialog({ open, setOpen, addCustomerData }) {
     temp.zip = zip.length === 5 ? "" : "This zip is not valid";
     temp.city = city ? "" : "This field is required";
     temp.region = region ? "" : "This field is required";
-    setErrors({ ...temp });
+    dispatch(setErrors({ ...temp }));
     return Object.values(temp).every((x) => x == "");
   };
 
   const handleSave = () => {
     // Save the Data
     if (validate()) {
-      setSavingData(true);
+      dispatch(setLoading(true));
       let person = {
         firstname,
         lastname,
@@ -63,37 +94,37 @@ export default function AddCustomerDialog({ open, setOpen, addCustomerData }) {
       };
       saveCustomer(person).then((customer) => {
         addCustomerData(customer);
-        setSavingData(false);
+        dispatch(setLoading(false));
         handleClose();
       });
     }
   };
 
   const resetState = () => {
-    setFirstname("");
-    setLastname("");
-    setBirthdate("05/21/1999");
-    setStreet("");
-    setZip("");
-    setCity("");
-    setEmail("");
-    setRegion("");
-    setErrors({});
+    dispatch(setFirstname(""));
+    dispatch(setLastname(""));
+    dispatch(setBirthdate("05/21/1999"));
+    dispatch(setStreet(""));
+    dispatch(setZip(""));
+    dispatch(setCity(""));
+    dispatch(setEmail(""));
+    dispatch(setRegion(""));
+    dispatch(setErrors({}));
   };
 
   const handleDateChange = (newDate) => {
-    setBirthdate(newDate);
+    dispatch(setBirthdate(newDate));
   };
 
   const handleClose = () => {
     resetState();
-    setOpen(false);
+    dispatch(setOpen(false));
   };
 
   return (
     <div>
       <Dialog open={open} onClose={handleClose}>
-        {savingData ? <LinearProgress /> : ""}
+        {loading ? <LinearProgress /> : ""}
         <DialogTitle>Add User</DialogTitle>
         <DialogContent>
           <div>
@@ -111,7 +142,7 @@ export default function AddCustomerDialog({ open, setOpen, addCustomerData }) {
               sx={{ mr: 2, width: "268px" }}
               value={firstname}
               onChange={(e) => {
-                setFirstname(e.target.value);
+                dispatch(setFirstname(e.target.value));
               }}
             />
             <TextField
@@ -127,7 +158,7 @@ export default function AddCustomerDialog({ open, setOpen, addCustomerData }) {
               variant="outlined"
               sx={{ width: "268px" }}
               value={lastname}
-              onChange={(e) => setLastname(e.target.value)}
+              onChange={(e) => dispatch(setLastname(e.target.value))}
             />
           </div>
           <TextField
@@ -142,7 +173,7 @@ export default function AddCustomerDialog({ open, setOpen, addCustomerData }) {
             fullWidth
             variant="outlined"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => dispatch(setEmail(e.target.value))}
           />
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DesktopDatePicker
@@ -168,7 +199,7 @@ export default function AddCustomerDialog({ open, setOpen, addCustomerData }) {
             fullWidth
             variant="outlined"
             value={street}
-            onChange={(e) => setStreet(e.target.value)}
+            onChange={(e) => dispatch(setStreet(e.target.value))}
           />
           <TextField
             autoFocus
@@ -181,10 +212,10 @@ export default function AddCustomerDialog({ open, setOpen, addCustomerData }) {
             helperText={errors.zip}
             label="Zip Code"
             type="text"
-            variant="outlined"
             sx={{ width: "268px", mr: 2 }}
+            variant="outlined"
             value={zip}
-            onChange={(e) => setZip(e.target.value)}
+            onChange={(e) => dispatch(setZip(e.target.value))}
           />
           <TextField
             autoFocus
@@ -199,7 +230,7 @@ export default function AddCustomerDialog({ open, setOpen, addCustomerData }) {
             variant="outlined"
             sx={{ width: "268px" }}
             value={city}
-            onChange={(e) => setCity(e.target.value)}
+            onChange={(e) => dispatch(setCity(e.target.value))}
           />
           <TextField
             id="outlined-select-currency"
@@ -211,7 +242,7 @@ export default function AddCustomerDialog({ open, setOpen, addCustomerData }) {
             sx={{ mt: 2 }}
             fullWidth
             value={region}
-            onChange={(e) => setRegion(e.target.value)}
+            onChange={(e) => dispatch(setRegion(e.target.value))}
           >
             {regions.map((option) => (
               <MenuItem key={option[0]} value={option[0]}>
