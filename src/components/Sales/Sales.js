@@ -6,9 +6,11 @@ import { DataGrid } from "@mui/x-data-grid";
 import AddSaleDialog from "../AddSaleDialog/AddSaleDialog";
 import CircularProgress from "@mui/material/CircularProgress";
 import { getSales, getCustomers, getSalesman } from "../../api/apiCalls";
+import { useDispatch } from "react-redux";
+import { setOpen } from "../../store/slices/addSaleDialogSlice";
 
 export default function Sales(props) {
-  const [addSale, setAddSale] = React.useState(false);
+  //const [addSale, setAddSale] = React.useState(false);
   const [pageSize, setPageSize] = React.useState(5);
   const [salesData, setSalesData] = React.useState([]);
   const [loading, setLoading] = React.useState([]);
@@ -18,6 +20,8 @@ export default function Sales(props) {
       sort: "desc",
     },
   ]);
+
+  let dispatch = useDispatch();
 
   const [allCusomters, setAllCustomers] = React.useState([]);
   const [allSalesman, setAllSalesman] = React.useState([]);
@@ -37,7 +41,7 @@ export default function Sales(props) {
   }, []);
 
   let openAddSale = () => {
-    setAddSale(true);
+    dispatch(setOpen(true));
   };
 
   const getCustomerFullname = (id) => {
@@ -166,11 +170,7 @@ export default function Sales(props) {
       </div>
       <div>
         <AddButton onClick={openAddSale}></AddButton>
-        <AddSaleDialog
-          open={addSale}
-          setOpen={setAddSale}
-          addSale={addSaleData}
-        ></AddSaleDialog>
+        <AddSaleDialog addSale={addSaleData}></AddSaleDialog>
       </div>
     </div>
   );

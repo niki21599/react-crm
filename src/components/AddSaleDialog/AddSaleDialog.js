@@ -13,9 +13,16 @@ import {
   getCustomers,
   saveSale,
 } from "../../api/apiCalls";
+import { setOpen } from "../../store/slices/addSaleDialogSlice";
+import { useDispatch, useSelector } from "react-redux";
 
-export default function AddSaleDialog({ open, setOpen, addSale }) {
+export default function AddSaleDialog({ addSale }) {
   let today = new Date();
+
+  let { open } = useSelector((state) => state.addSaleDialog);
+
+  let state = useSelector((state) => state.addSaleDialog);
+  console.log("current state", state);
 
   const [customer, setCustomer] = React.useState("");
   const [seller, setSeller] = React.useState("");
@@ -26,6 +33,8 @@ export default function AddSaleDialog({ open, setOpen, addSale }) {
   const [sellers, setSellers] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [errors, setErrors] = React.useState({});
+
+  let dispatch = useDispatch();
 
   useEffect(() => {
     getProductCategories().then((categories) =>
@@ -69,7 +78,7 @@ export default function AddSaleDialog({ open, setOpen, addSale }) {
 
   const handleClose = () => {
     resetState();
-    setOpen(false);
+    dispatch(setOpen(false));
   };
 
   return (
