@@ -6,20 +6,29 @@ import { DataGrid } from "@mui/x-data-grid";
 import AddSaleDialog from "../AddSaleDialog/AddSaleDialog";
 import CircularProgress from "@mui/material/CircularProgress";
 import { getSales, getCustomers, getSalesman } from "../../api/apiCalls";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setOpen } from "../../store/slices/addSaleDialogSlice";
+import {
+  setLoading,
+  setPageSize,
+  setSortModel,
+} from "../../store/slices/salesTableSlice";
 
 export default function Sales(props) {
   //const [addSale, setAddSale] = React.useState(false);
-  const [pageSize, setPageSize] = React.useState(5);
+  // const [pageSize, setPageSize] = React.useState(5);
   const [salesData, setSalesData] = React.useState([]);
-  const [loading, setLoading] = React.useState([]);
-  const [sortModel, setSortModel] = React.useState([
-    {
-      field: "id",
-      sort: "desc",
-    },
-  ]);
+  // const [loading, setLoading] = React.useState(false);
+  // const [sortModel, setSortModel] = React.useState([
+  //   {
+  //     field: "id",
+  //     sort: "desc",
+  //   },
+  // ]);
+
+  let { loading, sortModel, pageSize } = useSelector(
+    (state) => state.salesTable
+  );
 
   let dispatch = useDispatch();
 
@@ -32,9 +41,9 @@ export default function Sales(props) {
       .then(() => getSalesman())
       .then((salesman) => setAllSalesman(salesman))
       .then(() => {
-        setLoading(true);
+        dispatch(setLoading(true));
         getSales().then((sales) => {
-          setLoading(false);
+          dispatch(setLoading(false));
           setSalesData(sales);
         });
       });
@@ -155,13 +164,15 @@ export default function Sales(props) {
               columns={columns}
               pageSize={pageSize}
               rowsPerPageOptions={[5, 10, 20, 50]}
-              onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+              onPageSizeChange={(newPageSize) =>
+                dispatch(setPageSize(newPageSize))
+              }
               checkboxSelection
               disableSelectionOnClick
               sortingOrder="desc"
               sortModel={sortModel}
               onSortModelChange={(model) => {
-                setSortModel(model);
+                dispatch(setSortModel(model));
               }}
               experimentalFeatures={{ newEditingApi: true }}
             />

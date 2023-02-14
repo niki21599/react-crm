@@ -13,26 +13,34 @@ import {
   getCustomers,
   saveSale,
 } from "../../api/apiCalls";
-import { setOpen } from "../../store/slices/addSaleDialogSlice";
+import {
+  setOpen,
+  setAmount,
+  setCustomer,
+  setErrors,
+  setLoading,
+  setProductCat,
+  setSeller,
+} from "../../store/slices/addSaleDialogSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function AddSaleDialog({ addSale }) {
   let today = new Date();
 
   let { open } = useSelector((state) => state.addSaleDialog);
+  let { customer, seller, productCat, amount, loading, errors } = useSelector(
+    (state) => state.addSaleDialog
+  );
 
-  let state = useSelector((state) => state.addSaleDialog);
-  console.log("current state", state);
-
-  const [customer, setCustomer] = React.useState("");
-  const [seller, setSeller] = React.useState("");
-  const [productCat, setProductCat] = React.useState("");
-  const [amount, setAmount] = React.useState(0);
+  // const [customer, setCustomer] = React.useState("");
+  // const [seller, setSeller] = React.useState("");
+  // const [productCat, setProductCat] = React.useState("");
+  // const [amount, setAmount] = React.useState(0);
   const [customers, setCustomers] = React.useState([]);
   const [productCategories, setProductCategories] = React.useState([]);
   const [sellers, setSellers] = React.useState([]);
-  const [loading, setLoading] = React.useState(false);
-  const [errors, setErrors] = React.useState({});
+  // const [loading, setLoading] = React.useState(false);
+  // const [errors, setErrors] = React.useState({});
 
   let dispatch = useDispatch();
 
@@ -51,29 +59,29 @@ export default function AddSaleDialog({ addSale }) {
     temp.seller = seller ? "" : "This field is required";
     temp.amount = amount ? "" : "This is not a valid amount";
 
-    setErrors({ ...temp });
+    dispatch(setErrors({ ...temp }));
     return Object.values(temp).every((x) => x == "");
   };
 
   const handleSave = () => {
     // Save the Data
     if (validate()) {
-      setLoading(true);
+      dispatch(setLoading(true));
       let sale = { customer, seller, productCat, amount };
       saveSale(sale).then((saleData) => {
         addSale(saleData);
-        setLoading(false);
+        dispatch(setLoading(false));
         handleClose();
       });
     }
   };
 
   const resetState = () => {
-    setCustomer("");
-    setSeller("");
-    setProductCat("");
-    setAmount("");
-    setErrors({});
+    dispatch(setCustomer(""));
+    dispatch(setSeller(""));
+    dispatch(setProductCat(""));
+    dispatch(setAmount(""));
+    dispatch(setErrors({}));
   };
 
   const handleClose = () => {
@@ -96,7 +104,7 @@ export default function AddSaleDialog({ addSale }) {
             helperText={errors.customer}
             fullWidth
             value={customer}
-            onChange={(e) => setCustomer(e.target.value)}
+            onChange={(e) => dispatch(setCustomer(e.target.value))}
           >
             {customers.map((option) => (
               <MenuItem key={option.pk} value={option.pk}>
@@ -113,7 +121,7 @@ export default function AddSaleDialog({ addSale }) {
             error={errors.seller}
             helperText={errors.seller}
             value={seller}
-            onChange={(e) => setSeller(e.target.value)}
+            onChange={(e) => dispatch(setSeller(e.target.value))}
           >
             {sellers.map((option) => (
               <MenuItem key={option.pk} value={option.pk}>
@@ -130,7 +138,7 @@ export default function AddSaleDialog({ addSale }) {
             error={errors.productCat}
             helperText={errors.productCat}
             value={productCat}
-            onChange={(e) => setProductCat(e.target.value)}
+            onChange={(e) => dispatch(setProductCat(e.target.value))}
           >
             {productCategories.map((option) => (
               <MenuItem key={option[0]} value={option[0]}>
@@ -147,7 +155,7 @@ export default function AddSaleDialog({ addSale }) {
             error={errors.amount}
             helperText={errors.amount}
             value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            onChange={(e) => dispatch(setAmount(e.target.value))}
           />
         </DialogContent>
         <DialogActions>

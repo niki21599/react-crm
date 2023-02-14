@@ -8,18 +8,23 @@ import SaveChangesButton from "../SaveChangesButton/SaveChangesButton";
 import { useEffect } from "react";
 import { getCustomers } from "../../api/apiCalls";
 import { setOpen } from "../../store/slices/addCustomerDialogSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setSortModel,
+  setPageSize,
+} from "../../store/slices/customersTableSlice";
 
 export default function Customers(props) {
-  const [pageSize, setPageSize] = React.useState(5);
+  // const [pageSize, setPageSize] = React.useState(5);
   const [customerData, setCustomerData] = React.useState([]);
-  const [sortModel, setSortModel] = React.useState([
-    {
-      field: "id",
-      sort: "desc",
-    },
-  ]);
+  // const [sortModel, setSortModel] = React.useState([
+  //   {
+  //     field: "id",
+  //     sort: "desc",
+  //   },
+  // ]);
   let dispatch = useDispatch();
+  let { pageSize, sortModel } = useSelector((state) => state.customersTable);
 
   let openAddCustomerDialog = () => {
     console.log("im here");
@@ -124,12 +129,14 @@ export default function Customers(props) {
             columns={columns}
             pageSize={pageSize}
             rowsPerPageOptions={[5, 10, 20, 50]}
-            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+            onPageSizeChange={(newPageSize) =>
+              dispatch(setPageSize(newPageSize))
+            }
             checkboxSelection
             disableSelectionOnClick
             sortModel={sortModel}
             onSortModelChange={(model) => {
-              setSortModel(model);
+              dispatch(setSortModel(model));
             }}
             experimentalFeatures={{ newEditingApi: true }}
           />

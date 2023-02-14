@@ -21,18 +21,27 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setOpenDrawer,
+  setOpenResponsiveDrawer,
+} from "../../store/slices/headerMenuSlice";
 
 const drawerWidth = 240;
 
 export default function Header(props) {
-  let [openDrawer, setOpenDrawer] = React.useState(false);
+  // let [openDrawer, setOpenDrawer] = React.useState(false);
+  let dispatch = useDispatch();
+  let { openDrawer, openResponsiveDrawer } = useSelector(
+    (state) => state.headerMenu
+  );
 
-  let toggleDrawer = () => {
-    setOpenDrawer(!openDrawer);
+  let toggleResponsiveDrawer = () => {
+    dispatch(setOpenResponsiveDrawer(!openResponsiveDrawer));
   };
 
-  const handleDrawer = () => {
-    props.handleDrawer();
+  const toggleDrawer = () => {
+    dispatch(setOpenDrawer(!openDrawer));
   };
 
   //Für Header der nach rechts schiebt
@@ -43,7 +52,7 @@ export default function Header(props) {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    ...(props.open && {
+    ...(openDrawer && {
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: `${drawerWidth}px`,
       transition: theme.transitions.create(["margin", "width"], {
@@ -57,7 +66,7 @@ export default function Header(props) {
     <div>
       {/* Responsive Header */}
       <Box sx={{ flexGrow: 1 }} className="responsive">
-        <AppBar position="static">
+        <AppBar position="static" sx={{ width: "100%", marginLeft: 0 }}>
           <Toolbar>
             <React.Fragment key="left">
               <IconButton
@@ -66,21 +75,21 @@ export default function Header(props) {
                 color="inherit"
                 aria-label="menu"
                 sx={{ mr: 2 }}
-                onClick={toggleDrawer}
+                onClick={toggleResponsiveDrawer}
               >
                 <MenuIcon />
               </IconButton>
               <SwipeableDrawer
                 anchor="left"
-                open={openDrawer}
-                onClose={toggleDrawer}
-                onOpen={toggleDrawer}
+                open={openResponsiveDrawer}
+                onClose={toggleResponsiveDrawer}
+                onOpen={toggleResponsiveDrawer}
               >
                 <Box
                   sx={{ width: 250 }}
                   role="presentation"
-                  onClick={toggleDrawer}
-                  onKeyDown={toggleDrawer}
+                  onClick={toggleResponsiveDrawer}
+                  onKeyDown={toggleResponsiveDrawer}
                 >
                   <List>
                     <Typography variant="h5" align="center">
@@ -108,6 +117,7 @@ export default function Header(props) {
                       <Link
                         to={menuPoint.site}
                         style={{ textDecoration: "none" }}
+                        key={menuPoint.site}
                       >
                         <ListItem key={menuPoint.text} disablePadding>
                           <ListItemButton>
@@ -138,7 +148,7 @@ export default function Header(props) {
       </Box>
       {/* Standard-Header */}
       <Box sx={{ flexGrow: 1 }} className="responsive-d-none">
-        <AppBar position="static" open={props.open}>
+        <AppBar position="static" open={openDrawer}>
           <Toolbar>
             <IconButton
               size="large"
@@ -146,9 +156,9 @@ export default function Header(props) {
               color="inherit"
               aria-label="menu"
               sx={{ mr: 2 }}
-              onClick={handleDrawer}
+              onClick={toggleDrawer}
             >
-              {props.open ? <ChevronLeftIcon /> : <MenuIcon />}
+              {openDrawer ? <ChevronLeftIcon /> : <MenuIcon />}
             </IconButton>
             <Typography
               variant="h5"
@@ -170,7 +180,7 @@ export default function Header(props) {
           }}
           variant="persistent"
           anchor="left"
-          open={props.open}
+          open={openDrawer}
         >
           <img src="/customer_logo.png" alt="" className="img-logo" />
           <Divider />
@@ -180,7 +190,11 @@ export default function Header(props) {
               { text: "Customers", icon: <PeopleIcon />, site: "customers" },
               { text: "Sales", icon: <ShoppingBasketIcon />, site: "sales" },
             ].map((menuPoint) => (
-              <Link to={menuPoint.site} style={{ textDecoration: "none" }}>
+              <Link
+                to={menuPoint.site}
+                style={{ textDecoration: "none" }}
+                key={menuPoint.site}
+              >
                 <ListItem key={menuPoint.text} disablePadding>
                   <ListItemButton>
                     <ListItemIcon>{menuPoint.icon}</ListItemIcon>

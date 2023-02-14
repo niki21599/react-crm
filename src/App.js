@@ -13,8 +13,8 @@ function App() {
     <div className="App">
       <Header
         authenticated={true}
-        handleDrawer={handleDrawer}
-        open={drawerOpen}
+        //handleDrawer={handleDrawer}
+        // open={drawerOpen}
         setActiveSite={setActiveSite}
       ></Header>
       <Main activeSite={activeSite} drawerOpen={drawerOpen}></Main>
