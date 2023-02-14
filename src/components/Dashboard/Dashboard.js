@@ -33,10 +33,11 @@ import {
   useGetSalesBySalesmanQuery,
   useGetSalesmanQuery,
 } from "../../store/api/crmApi";
+import { useSelector } from "react-redux";
 
 export default function Dashboard() {
-  // Give the data in ordered form back, Looks better in barChart
-  const [reload, setReload] = React.useState(false);
+  let { openDrawer } = useSelector((state) => state.headerMenu);
+
   // PreLoad all
   let { data: allCustomers } = useGetCustomersQuery();
   let { data: allSalesman } = useGetSalesmanQuery();
@@ -143,7 +144,7 @@ export default function Dashboard() {
   return (
     <div className="flex">
       <h1 className="center">Customer Dashboard</h1>
-      <div className="container">
+      <div className={openDrawer ? "container-open" : "container-closed"}>
         <DashboardCard
           title={"Sells by Salesman"}
           by={"salesPerson"}

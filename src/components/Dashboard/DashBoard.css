@@ -10,25 +10,36 @@
     align-content: center;
 }
 
-.container {
+.container-open {
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+
+.container-closed {
     display: grid;
     grid-template-columns: auto auto auto;
 }
 
 @media (max-width: 1942px) {
-    .container {
+    .container-open {
         grid-template-columns: auto auto;
     }
 }
 
 @media (max-width: 1370px) {
-    .container {
+    .container-open {
         grid-template-columns: auto;
     }
 }
 
-@media (max-width: 560px) {
-    .container {
+@media (max-width: 1702px) {
+    .container-closed {
+        grid-template-columns: auto auto;
+    }
+}
+
+@media (max-width: 1130px) {
+    .container-closed {
         grid-template-columns: auto;
     }
 }

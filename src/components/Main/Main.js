@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Main.css";
 import Customers from "../Customers/Customers";
 import Dashboard from "../Dashboard/Dashboard";
@@ -11,10 +11,13 @@ import ResizeSensor from "css-element-queries/src/ResizeSensor";
 export default function Main() {
   let { openDrawer } = useSelector((state) => state.headerMenu);
 
-  let width = window.screen.width;
-  // new ResizeSensor(jQuery("body"), function () {
-  //   width = window.screen.width;
-  // });
+  //Damit bei offenem normal Drawer die Sachen beim übergang zu Responsive Drawer mittig angezeigt werden.
+  let [width, setWidth] = useState(window.screen.width);
+  let element = document.body;
+  new ResizeSensor(element, function () {
+    setWidth(window.screen.width);
+  });
+
   return (
     <div
       className={openDrawer && width > 850 ? "mainContent left" : "mainContent"}
