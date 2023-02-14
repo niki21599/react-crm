@@ -5,10 +5,20 @@ import Dashboard from "../Dashboard/Dashboard";
 import Sales from "../Sales/Sales";
 import { Navigate, Routes } from "react-router-dom";
 import { Route } from "react-router-dom";
+import { useSelector } from "react-redux";
+import ResizeSensor from "css-element-queries/src/ResizeSensor";
 
-export default function Main({ activeSite, drawerOpen }) {
+export default function Main() {
+  let { openDrawer } = useSelector((state) => state.headerMenu);
+
+  let width = window.screen.width;
+  // new ResizeSensor(jQuery("body"), function () {
+  //   width = window.screen.width;
+  // });
   return (
-    <div className={drawerOpen ? "mainContent left" : "mainContent"}>
+    <div
+      className={openDrawer && width > 850 ? "mainContent left" : "mainContent"}
+    >
       <Routes>
         <Route path="/" element={<Navigate to={"/dashboard"} />}></Route>
         <Route path="/dashboard" element={<Dashboard />}></Route>

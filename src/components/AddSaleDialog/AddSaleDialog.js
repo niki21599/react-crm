@@ -23,8 +23,14 @@ import {
   setSeller,
 } from "../../store/slices/addSaleDialogSlice";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  useAddSaleMutation,
+  useGetCustomersQuery,
+  useGetSalesmanQuery,
+  useGetProductCategoriesQuery,
+} from "../../store/api/crmApi";
 
-export default function AddSaleDialog({ addSale }) {
+export default function AddSaleDialog(props) {
   let today = new Date();
 
   let { open } = useSelector((state) => state.addSaleDialog);
@@ -32,25 +38,12 @@ export default function AddSaleDialog({ addSale }) {
     (state) => state.addSaleDialog
   );
 
-  // const [customer, setCustomer] = React.useState("");
-  // const [seller, setSeller] = React.useState("");
-  // const [productCat, setProductCat] = React.useState("");
-  // const [amount, setAmount] = React.useState(0);
-  const [customers, setCustomers] = React.useState([]);
-  const [productCategories, setProductCategories] = React.useState([]);
-  const [sellers, setSellers] = React.useState([]);
-  // const [loading, setLoading] = React.useState(false);
-  // const [errors, setErrors] = React.useState({});
+  let { data: customers, isFetching } = useGetCustomersQuery();
+  let { data: sellers } = useGetSalesmanQuery();
+  let { data: productCategories } = useGetProductCategoriesQuery();
 
   let dispatch = useDispatch();
-
-  useEffect(() => {
-    getProductCategories().then((categories) =>
-      setProductCategories(categories)
-    );
-    getCustomers().then((customers) => setCustomers(customers));
-    getSalesman().then((sellers) => setSellers(sellers));
-  }, []);
+  let [addSale] = useAddSaleMutation();
 
   const validate = () => {
     let temp = {};
@@ -68,11 +61,9 @@ export default function AddSaleDialog({ addSale }) {
     if (validate()) {
       dispatch(setLoading(true));
       let sale = { customer, seller, productCat, amount };
-      saveSale(sale).then((saleData) => {
-        addSale(saleData);
-        dispatch(setLoading(false));
-        handleClose();
-      });
+      addSale(sale);
+      dispatch(setLoading(false));
+      handleClose();
     }
   };
 
@@ -106,11 +97,13 @@ export default function AddSaleDialog({ addSale }) {
             value={customer}
             onChange={(e) => dispatch(setCustomer(e.target.value))}
           >
-            {customers.map((option) => (
-              <MenuItem key={option.pk} value={option.pk}>
-                {option.fields.first_name + " " + option.fields.last_name}
-              </MenuItem>
-            ))}
+            {customers
+              ? customers.map((option) => (
+                  <MenuItem key={option.pk} value={option.pk}>
+                    {option.fields.first_name + " " + option.fields.last_name}
+                  </MenuItem>
+                ))
+              : ""}
           </TextField>
           <TextField
             id="outlined-select-currency"
@@ -123,11 +116,13 @@ export default function AddSaleDialog({ addSale }) {
             value={seller}
             onChange={(e) => dispatch(setSeller(e.target.value))}
           >
-            {sellers.map((option) => (
-              <MenuItem key={option.pk} value={option.pk}>
-                {option.fields.first_name + " " + option.fields.last_name}
-              </MenuItem>
-            ))}
+            {sellers
+              ? sellers.map((option) => (
+                  <MenuItem key={option.pk} value={option.pk}>
+                    {option.fields.first_name + " " + option.fields.last_name}
+                  </MenuItem>
+                ))
+              : ""}
           </TextField>
           <TextField
             id="outlined-select-currency"
@@ -140,11 +135,13 @@ export default function AddSaleDialog({ addSale }) {
             value={productCat}
             onChange={(e) => dispatch(setProductCat(e.target.value))}
           >
-            {productCategories.map((option) => (
-              <MenuItem key={option[0]} value={option[0]}>
-                {option[1]}
-              </MenuItem>
-            ))}
+            {productCategories
+              ? productCategories.map((option) => (
+                  <MenuItem key={option[0]} value={option[0]}>
+                    {option[1]}
+                  </MenuItem>
+                ))
+              : ""}
           </TextField>
           <TextField
             id="outlined-number"

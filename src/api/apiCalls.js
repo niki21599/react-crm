@@ -112,7 +112,7 @@ export async function getSalesByCategory() {
 }
 
 export async function getNumByCategory() {
-  let numOfSales = await fetch(BASE_URL + "dashboard/num/cat", {
+  let numOfSales = await fetch(BASE_URL + "", {
     method: "GET",
   });
   numOfSales = await numOfSales.json();

@@ -13,134 +13,74 @@ import {
   setPageSize,
   setSortModel,
 } from "../../store/slices/salesTableSlice";
+import {
+  useGetCustomersQuery,
+  useGetSalesmanQuery,
+  useGetSalesQuery,
+} from "../../store/api/crmApi";
+import { getColumnsSaleTable } from "../../utils/configTables";
 
-export default function Sales(props) {
-  //const [addSale, setAddSale] = React.useState(false);
-  // const [pageSize, setPageSize] = React.useState(5);
-  const [salesData, setSalesData] = React.useState([]);
-  // const [loading, setLoading] = React.useState(false);
-  // const [sortModel, setSortModel] = React.useState([
-  //   {
-  //     field: "id",
-  //     sort: "desc",
-  //   },
-  // ]);
-
+export default function Sales() {
   let { loading, sortModel, pageSize } = useSelector(
     (state) => state.salesTable
   );
-
+  let { data: salesData, isFetching } = useGetSalesQuery();
   let dispatch = useDispatch();
 
-  const [allCusomters, setAllCustomers] = React.useState([]);
-  const [allSalesman, setAllSalesman] = React.useState([]);
-
-  useEffect(() => {
-    getCustomers()
-      .then((customers) => setAllCustomers(customers))
-      .then(() => getSalesman())
-      .then((salesman) => setAllSalesman(salesman))
-      .then(() => {
-        dispatch(setLoading(true));
-        getSales().then((sales) => {
-          dispatch(setLoading(false));
-          setSalesData(sales);
-        });
-      });
-  }, []);
+  let { data: allCustomers } = useGetCustomersQuery();
+  let { data: allSalesman } = useGetSalesmanQuery();
 
   let openAddSale = () => {
     dispatch(setOpen(true));
   };
 
   const getCustomerFullname = (id) => {
-    let customer = allCusomters.filter((customer) => id === customer.pk);
-    if (customer.length >= 1) {
-      return (
-        customer[0].fields.first_name[0] + ". " + customer[0].fields.last_name
-      );
-    } else {
-      return id;
+    if (allCustomers) {
+      let customer = allCustomers.filter((customer) => id === customer.pk);
+      if (customer.length >= 1) {
+        return (
+          customer[0].fields.first_name[0] + ". " + customer[0].fields.last_name
+        );
+      } else {
+        return id;
+      }
     }
   };
 
   const getSalesmanFullname = (id) => {
-    let salesman = allSalesman.filter((seller) => id === seller.pk);
-    if (salesman.length >= 1) {
-      return (
-        salesman[0].fields.first_name[0] + ". " + salesman[0].fields.last_name
-      );
-    } else {
-      return id;
+    if (allSalesman) {
+      let salesman = allSalesman.filter((seller) => id === seller.pk);
+      if (salesman.length >= 1) {
+        return (
+          salesman[0].fields.first_name[0] + ". " + salesman[0].fields.last_name
+        );
+      } else {
+        return id;
+      }
     }
-  };
-
-  let addSaleData = async (sale) => {
-    sale = sale[0];
-
-    let newSales = [...salesData, sale];
-    setSalesData(newSales);
   };
 
   let convertToDataGridStructure = (sales) => {
     let changedData = [];
-    console.log("Sales", sales);
-    for (const sale of sales) {
-      let sellerName = getSalesmanFullname(sale.fields.salesPerson);
-      let customerName = getCustomerFullname(sale.fields.customer);
-      changedData.push({
-        id: sale.pk,
-        date: sale.fields.created_at,
-        sellerName: sellerName,
-        customerName: customerName,
-        productCat: sale.fields.productCategory,
-        saleAmount: sale.fields.sales,
-      });
+    if (salesData) {
+      for (const sale of sales) {
+        let sellerName = getSalesmanFullname(sale.fields.salesPerson);
+        let customerName = getCustomerFullname(sale.fields.customer);
+        changedData.push({
+          id: sale.pk,
+          date: sale.fields.created_at,
+          sellerName: sellerName,
+          customerName: customerName,
+          productCat: sale.fields.productCategory,
+          saleAmount: sale.fields.sales,
+        });
+      }
     }
+
     return changedData;
   };
 
-  let columns = [
-    { field: "id", headerName: "ID", width: 30 },
-    {
-      field: "date",
-      headerName: "Date",
-      flex: 1,
-      minWidth: 100,
-
-      type: "date",
-      valueGetter: ({ value }) => value && new Date(value),
-    },
-    {
-      field: "sellerName",
-      headerName: "Sold by",
-      flex: 1,
-      minWidth: 100,
-      type: "singleSelect",
-    },
-    {
-      field: "customerName",
-      headerName: "Customer",
-      flex: 1,
-      minWidth: 100,
-      type: "singleSelect",
-    },
-    {
-      field: "productCat",
-      headerName: "Product Category",
-      type: "text",
-      flex: 1,
-      minWidth: 100,
-      type: "singleSelect",
-    },
-    {
-      field: "saleAmount",
-      headerName: "Sale Amount",
-      flex: 1,
-      minWidth: 80,
-      type: "number",
-    },
-  ];
+  let columns = getColumnsSaleTable();
 
   return (
     <div className="heightChange">
@@ -181,7 +121,7 @@ export default function Sales(props) {
       </div>
       <div>
         <AddButton onClick={openAddSale}></AddButton>
-        <AddSaleDialog addSale={addSaleData}></AddSaleDialog>
+        <AddSaleDialog></AddSaleDialog>
       </div>
     </div>
   );

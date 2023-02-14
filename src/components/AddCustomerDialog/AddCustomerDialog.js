@@ -1,21 +1,16 @@
 import React from "react";
 import "./AddCustomerDialog.css";
 import Button from "@mui/material/Button";
-
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import DialogTitle from "@mui/material/DialogTitle";
 import { MenuItem } from "@mui/material";
-import { saveCustomer } from "../../api/apiCalls";
 import LinearProgress from "@mui/material/LinearProgress";
-import { useEffect } from "react";
-import { getRegions } from "../../api/apiCalls";
 import {
   setOpen,
   setFirstname,
@@ -30,8 +25,12 @@ import {
   setZip,
 } from "../../store/slices/addCustomerDialogSlice";
 import { useSelector, useDispatch } from "react-redux";
+import {
+  useAddCustomerMutation,
+  useGetRegionsQuery,
+} from "../../store/api/crmApi";
 
-export default function AddCustomerDialog({ addCustomerData }) {
+export default function AddCustomerDialog() {
   let {
     firstname,
     lastname,
@@ -48,11 +47,9 @@ export default function AddCustomerDialog({ addCustomerData }) {
 
   let dispatch = useDispatch();
 
-  const [regions, setRegions] = React.useState([]);
+  let [addCustomer] = useAddCustomerMutation();
 
-  useEffect(() => {
-    getRegions().then((regions) => setRegions(regions)); // setRegions(regions));
-  }, []);
+  let { data: regions } = useGetRegionsQuery();
 
   let validate = () => {
     let temp = {};
@@ -81,11 +78,10 @@ export default function AddCustomerDialog({ addCustomerData }) {
         city,
         region,
       };
-      saveCustomer(person).then((customer) => {
-        addCustomerData(customer);
-        dispatch(setLoading(false));
-        handleClose();
-      });
+
+      addCustomer(person);
+      dispatch(setLoading(false));
+      handleClose();
     }
   };
 
@@ -233,11 +229,13 @@ export default function AddCustomerDialog({ addCustomerData }) {
             value={region}
             onChange={(e) => dispatch(setRegion(e.target.value))}
           >
-            {regions.map((option) => (
-              <MenuItem key={option[0]} value={option[0]}>
-                {option[1]}
-              </MenuItem>
-            ))}
+            {regions
+              ? regions.map((option) => (
+                  <MenuItem key={option[0]} value={option[0]}>
+                    {option[1]}
+                  </MenuItem>
+                ))
+              : ""}
           </TextField>
         </DialogContent>
         <DialogActions>

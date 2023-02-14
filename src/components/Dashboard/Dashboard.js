@@ -23,100 +23,123 @@ import {
 
 import "./DashBoard.css";
 import { Api } from "@mui/icons-material";
+import {
+  useGetCustomersQuery,
+  useGetNumByCategoryQuery,
+  useGetNumByCustomerQuery,
+  useGetNumBySalesmanQuery,
+  useGetSalesByCategoryQuery,
+  useGetSalesByCustomerQuery,
+  useGetSalesBySalesmanQuery,
+  useGetSalesmanQuery,
+} from "../../store/api/crmApi";
 
 export default function Dashboard() {
   // Give the data in ordered form back, Looks better in barChart
-
-  const [byCat, setByCat] = React.useState({});
-  const [bySeller, setBySeller] = React.useState({});
-  const [byCustomer, setByCustomer] = React.useState({});
-  const [allCusomters, setAllCustomers] = React.useState([]);
-  const [allSalesman, setAllSalesman] = React.useState([]);
   const [reload, setReload] = React.useState(false);
+  // PreLoad all
+  let { data: allCustomers } = useGetCustomersQuery();
+  let { data: allSalesman } = useGetSalesmanQuery();
 
-  useEffect(() => {
-    // Get Category Data
-    getSalesByCategory().then((data) => {
-      byCat.sales = data;
-
-      setByCat({ ...byCat });
-    });
-    getNumByCategory().then((data) => {
-      byCat.numOfSales = data;
-      setByCat({ ...byCat });
-    });
-    // Get Seller Data
-    getSalesBySalesman().then((data) => {
-      for (const salesman of data) {
-        salesman.salesPerson = getSalesmanname(salesman.salesPerson);
-      }
-
-      bySeller.sales = data;
-
-      setBySeller({ ...bySeller });
-    });
-
-    getNumBySalesman().then((data) => {
-      for (const salesman of data) {
-        salesman.salesPerson = getSalesmanname(salesman.salesPerson);
-      }
-
-      bySeller.numOfSales = data;
-
-      setBySeller({ ...bySeller });
-    });
-
-    // Get Customer Data
-    getSalesByCustomer().then((data) => {
-      for (const customer of data) {
-        customer.customer = getCustomername(customer.customer);
-      }
-      byCustomer.sales = data;
-      setByCustomer({ ...byCustomer });
-    });
-
-    getNumByCustomer().then((data) => {
-      for (const customer of data) {
-        customer.customer = getCustomername(customer.customer);
-      }
-      byCustomer.numOfSales = data;
-      setByCustomer({ ...byCustomer });
-    });
-  }, [reload]);
-
-  useEffect(() => {
-    getCustomers().then((customers) => {
-      setAllCustomers(customers);
-      setReload(!reload);
-    });
-
-    getSalesman().then((salesman) => {
-      setAllSalesman(salesman);
-      setReload(!reload);
-    });
-  }, []);
+  let { data: catNum } = useGetNumByCategoryQuery();
+  let { data: salesmanNum } = useGetNumBySalesmanQuery();
+  let { data: customerNum } = useGetNumByCustomerQuery();
+  let { data: catSales } = useGetSalesByCategoryQuery();
+  let { data: salesmanSales } = useGetSalesBySalesmanQuery();
+  let { data: customerSales } = useGetSalesByCustomerQuery();
 
   const getCustomername = (id) => {
-    let customer = allCusomters.filter((customer) => id === customer.pk);
-    if (customer.length === 1) {
-      return (
-        customer[0].fields.first_name[0] + ". " + customer[0].fields.last_name
-      );
-    } else {
-      return "";
+    if (allCustomers) {
+      let customer = allCustomers.filter((customer) => id === customer.pk);
+      if (customer.length === 1) {
+        return (
+          customer[0].fields.first_name[0] + ". " + customer[0].fields.last_name
+        );
+      } else {
+        return "";
+      }
     }
   };
 
   const getSalesmanname = (id) => {
-    let salesman = allSalesman.filter((seller) => id === seller.pk);
-    if (salesman.length === 1) {
-      return (
-        salesman[0].fields.first_name[0] + ". " + salesman[0].fields.last_name
-      );
-    } else {
-      return "";
+    if (allSalesman) {
+      let salesman = allSalesman.filter((seller) => id === seller.pk);
+      if (salesman.length === 1) {
+        return (
+          salesman[0].fields.first_name[0] + ". " + salesman[0].fields.last_name
+        );
+      } else {
+        return "";
+      }
     }
   };
+
+  let byCat = {
+    sales: [],
+    numOfSales: [],
+  };
+
+  let bySeller = {
+    sales: [],
+    numOfSales: [],
+  };
+  let byCustomer = {
+    sales: [],
+    numOfSales: [],
+  };
+
+  if (catNum && catSales) {
+    byCat.numOfSales = catNum;
+    byCat.sales = catSales;
+  }
+
+  if (salesmanNum && salesmanSales && allSalesman) {
+    let salesmanNumWithNames = [];
+    for (const salesman of salesmanNum) {
+      let newOne = {
+        ...salesman,
+        salesPerson: getSalesmanname(salesman.salesPerson),
+      };
+
+      salesmanNumWithNames.push(newOne);
+    }
+
+    let salesmanSalesWithNames = [];
+    for (const salesman of salesmanSales) {
+      let newOne = {
+        ...salesman,
+        salesPerson: getSalesmanname(salesman.salesPerson),
+      };
+      salesmanSalesWithNames.push(newOne);
+    }
+
+    bySeller.numOfSales = salesmanNumWithNames;
+    bySeller.sales = salesmanSalesWithNames;
+  }
+
+  if (customerNum && customerSales && allCustomers) {
+    let customerNumWithNames = [];
+    for (const customer of customerNum) {
+      let newOne = {
+        ...customer,
+        customer: getCustomername(customer.customer),
+      };
+      customerNumWithNames.push(newOne);
+    }
+
+    let customerSalesWithNames = [];
+    for (const customer of customerSales) {
+      let newOne = {
+        ...customer,
+        customer: getCustomername(customer.customer),
+      };
+      customerSalesWithNames.push(newOne);
+    }
+
+    byCustomer.numOfSales = customerNumWithNames;
+    byCustomer.sales = customerSalesWithNames;
+  }
+
   return (
     <div className="flex">
       <h1 className="center">Customer Dashboard</h1>
