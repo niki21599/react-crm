@@ -15,8 +15,8 @@ import { getColumnsCustomerTable } from "../../utils/configTables";
 
 export default function Customers() {
   let { data: customerData, isFetching } = useGetCustomersQuery();
-
   let dispatch = useDispatch();
+
   let { pageSize, sortModel } = useSelector((state) => state.customersTable);
 
   let openAddCustomerDialog = () => {

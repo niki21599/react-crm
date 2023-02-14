@@ -109,7 +109,6 @@ export default function Sales() {
               }
               checkboxSelection
               disableSelectionOnClick
-              sortingOrder="desc"
               sortModel={sortModel}
               onSortModelChange={(model) => {
                 dispatch(setSortModel(model));
