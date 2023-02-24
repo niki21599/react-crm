@@ -1,4 +1,4 @@
-let BASE_URL = "http://127.0.0.1:8000/";
+let BASE_URL = "http://35.204.254.67/";
 
 export async function getCustomers() {
   let customers = await fetch(BASE_URL + "customers/get/all", {
