@@ -3,7 +3,7 @@ import { formatDate } from "../../utils/helpers";
 
 let crmApi = createApi({
   reducerPath: "crm",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://35.204.254.67" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "https://crm.niklasburg-kanban.de" }),
   endpoints: (builder) => {
     return {
       getCustomers: builder.query({

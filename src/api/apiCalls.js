@@ -1,4 +1,4 @@
-let BASE_URL = "http://35.204.254.67/";
+let BASE_URL = "https://crm.niklasburg-kanban.de";
 
 export async function getCustomers() {
   let customers = await fetch(BASE_URL + "customers/get/all", {
