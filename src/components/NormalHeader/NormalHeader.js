@@ -84,7 +84,7 @@ export default function NormalHeader() {
         anchor="left"
         open={openDrawer}
       >
-        <img src="/customer_logo.png" alt="" className="img-logo" />
+        <img src="/react-crm/customer_logo.png" alt="" className="img-logo" />
         <Divider />
         <List>
           {[
