@@ -15,7 +15,7 @@ export default function Main() {
   let [width, setWidth] = useState(window.screen.width);
   let element = document.body;
   new ResizeSensor(element, function () {
-    setWidth(window.screen.width);
+    setWidth(window.innerWidth);
   });
 
   return (

@@ -48,16 +48,17 @@ export default function ResponsiveHeader() {
               onOpen={toggleResponsiveDrawer}
             >
               <Box
-                sx={{ width: 250 }}
+                sx={{ width: 200 }}
                 role="presentation"
                 onClick={toggleResponsiveDrawer}
                 onKeyDown={toggleResponsiveDrawer}
               >
                 <List>
-                  <Typography variant="h5" align="center">
-                    {" "}
-                    My CRM
-                  </Typography>
+                  <img
+                    src="/react-crm/customer_logo.png"
+                    alt=""
+                    className="img-logo-responsive"
+                  />
                   <Divider />
                   {[
                     {
@@ -103,7 +104,7 @@ export default function ResponsiveHeader() {
             className="heading-responsive"
             sx={{ flexGrow: 1, fontFamily: "cursive" }}
           >
-            MyCRM
+            My CRM
           </Typography>
         </Toolbar>
       </AppBar>

@@ -3,6 +3,11 @@
     object-fit: contain;
 }
 
+.img-logo-responsive {
+    height: 50px;
+    object-fit: contain;
+}
+
 .responsive {
     display: none;
 }
