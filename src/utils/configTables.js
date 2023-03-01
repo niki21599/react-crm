@@ -1,6 +1,6 @@
 export let getColumnsCustomerTable = () => {
   return [
-    { field: "id", headerName: "ID", width: 30 },
+    { field: "id", headerName: "ID", width: 60 },
     {
       field: "firstname",
       headerName: "First name",
@@ -53,7 +53,7 @@ export let getColumnsCustomerTable = () => {
 
 export let getColumnsSaleTable = () => {
   return [
-    { field: "id", headerName: "ID", width: 30 },
+    { field: "id", headerName: "ID", width: 60 },
     {
       field: "date",
       headerName: "Date",

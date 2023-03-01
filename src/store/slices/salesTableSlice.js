@@ -9,7 +9,7 @@ let initialSort = [
 
 let salesTableSlice = createSlice({
   name: "salesTable",
-  initialState: { sortModel: initialSort, pageSize: 5, loading: false },
+  initialState: { sortModel: initialSort, pageSize: 10, loading: false },
   reducers: {
     setSortModel: (state, action) => {
       state.sortModel = action.payload;

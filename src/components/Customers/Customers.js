@@ -65,7 +65,6 @@ export default function Customers() {
             onPageSizeChange={(newPageSize) =>
               dispatch(setPageSize(newPageSize))
             }
-            checkboxSelection
             disableSelectionOnClick
             sortModel={sortModel}
             onSortModelChange={(model) => {
